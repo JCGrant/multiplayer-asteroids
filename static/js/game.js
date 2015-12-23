@@ -25,11 +25,13 @@ function create() {
   player = game.add.sprite(game.world.centerX, game.world.centerY, 'ship');
   game.physics.arcade.enable(player);
   player.anchor.setTo(0.5, 0.5);
-  var tint = 0x333333 + 0xcccccc * Math.random();
+  var tint = get_tint();
   player.tint = tint;
 
-  flame_emitters.push(game.add.emitter(-28, 39, 1000));
-  flame_emitters.push(game.add.emitter(28, 39, 1000));
+  var thruster_x = 28;
+  var thruster_y = 39;
+  flame_emitters.push(game.add.emitter(-thruster_x, thruster_y, 1000));
+  flame_emitters.push(game.add.emitter(thruster_x, thruster_y, 1000));
   for (var i = 0; i < flame_emitters.length; i++) {
     flame_emitters[i].makeParticles('fireblob');
     player.addChild(flame_emitters[i]);
@@ -80,6 +82,13 @@ function update() {
   }
   player.body.angularVelocity = value_or_max(player.body.angularVelocity,
                                              max_rotation_speed);
+}
+
+function get_tint() {
+  var r = (0x77 + 0x88 * Math.random());
+  var g = (0x77 + 0x88 * Math.random());
+  var b = (0x77 + 0x88 * Math.random());
+  return (r << 16) + (g << 8) + (b << 0);
 }
 
 function value_or_max(value, max) {
