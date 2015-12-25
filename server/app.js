@@ -5,7 +5,7 @@ var io = require('socket.io')(http);
 
 port = 3000;
 
-app.use('/static', express.static(__dirname + '/static'));
+app.use('/static', express.static(__dirname + '/../public'));
 
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/views/index.html');
