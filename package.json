@@ -2,15 +2,17 @@
   "name": "multiplayer-asteroids",
   "version": "1.0.0",
   "description": "A simple multiplayer game based on the classic Asteroids.",
-  "main": "app.js",
+  "main": "server/app.js",
   "scripts": {
-    "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "./node_modules/nodemon/bin/nodemon.js --watch server"
   },
   "author": "JCGrant",
   "license": "MIT",
   "dependencies": {
     "express": "^4.13.3",
     "socket.io": "^1.3.7"
+  },
+  "devDependencies": {
+    "nodemon": "^1.8.1"
   }
 }
