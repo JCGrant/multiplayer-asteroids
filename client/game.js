@@ -1,4 +1,4 @@
-sockets = require('./sockets.js');
+require('./sockets.js');
 
 var width = window.innerWidth;
 var height = window.innerHeight;
