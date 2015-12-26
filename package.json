@@ -5,7 +5,7 @@
   "main": "server/app.js",
   "scripts": {
     "start": "./node_modules/nodemon/bin/nodemon.js --watch server",
-    "watchify": "./node_modules/watchify/bin/cmd.js -v client/*.js -o public/js/client.js"
+    "watchify": "./node_modules/watchify/bin/cmd.js client/game.js -o public/js/client.js -v"
   },
   "author": "JCGrant",
   "license": "MIT",
