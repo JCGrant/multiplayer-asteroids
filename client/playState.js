@@ -23,7 +23,7 @@ function playState(game) {
     this.player.anchor.setTo(0.5, 0.5);
     var tint = get_tint();
     this.player.tint = tint;
-    this.player.universal = {
+    this.player.data = {
       position: {
         x: 0,
         y: 0,
@@ -34,6 +34,7 @@ function playState(game) {
         dy: 0,
         dr: 0,
       },
+      tint: tint,
     };
      
     // Setup thrusters
@@ -114,18 +115,32 @@ function playState(game) {
     }
     if (!keys.left.isDown && !keys.right.isDown) {
       this.player.body.angularVelocity /= slow_down_rate;
+      this.player.body.angularVelocity = value_or_zero(
+          this.player.body.angularVelocity);
     }
     this.player.body.angularVelocity = value_or_max(this.player.body.angularVelocity,
                                                     max_rotation_speed);
   };
 
   this.updateDebuggingText = function() {
-    this.debug_text.text = '';
-    for (var key in player.universal) {
-      for (var _key in player.universal[key]) {
-        this.debug_text.text += _key + ': ' + player.universal[key][_key] + '\n';
-      }
-    }
+    var text = '';
+    text += 'x: ' + this.player.data.position.x + '\n';
+    text += 'y: ' + this.player.data.position.y + '\n';
+    text += 'r: ' + this.player.data.position.r + '\n';
+    text += 'x: ' + this.player.data.velocity.x + '\n';
+    text += 'y: ' + this.player.data.velocity.y + '\n';
+    text += 'r: ' + this.player.data.velocity.r + '\n';
+    this.debug_text.text = text;
+  };
+
+  this.sync = function() {
+    this.player.data.position.x -= this.background.velocity.x;
+    this.player.data.position.y += this.background.velocity.y;
+    this.player.data.position.r = this.player.rotation;
+
+    this.player.data.velocity.x = -this.background.velocity.x;
+    this.player.data.velocity.y = this.background.velocity.y;
+    this.player.data.velocity.r = -this.player.body.angularVelocity;
   };
   
   this.update = function() {
@@ -133,6 +148,7 @@ function playState(game) {
     if (this.debug) {
       this.updateDebuggingText();
     }
+    this.sync();
   };
 
   return this;
