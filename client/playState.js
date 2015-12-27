@@ -1,8 +1,8 @@
 function playState(game) {
-  var background;
-  var player;
-  var flame_emitters = [];
-  var cursors;
+  this.background = null;
+  this.player = null;
+  this.flame_emitters = [];
+  thiskeys = null;
 
   this.preload = function() {
     game.load.image('space-bg', '/static/assets/img/space-bg.jpg');
@@ -10,33 +10,42 @@ function playState(game) {
     game.load.image('fireblob', '/static/assets/img/fireblob.png');
   }
 
- this.create = function() {
-    background = game.add.tileSprite(0, 0, game.width, game.height, 'space-bg');
-    background.velocity = { x: 0, y: 0 };
+  this.create = function() {
     
-    player = game.add.sprite(game.world.centerX, game.world.centerY, 'ship');
-    game.physics.arcade.enable(player);
-    player.anchor.setTo(0.5, 0.5);
+    // Set up this.background
+    this.background = game.add.tileSprite(0, 0, game.width, game.height, 'space-bg');
+    this.background.velocity = { x: 0, y: 0 };
+    
+    // Setup this.player
+    this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'ship');
+    game.physics.arcade.enable(this.player);
+    this.player.anchor.setTo(0.5, 0.5);
     var tint = get_tint();
-    player.tint = tint;
-
+    this.player.tint = tint;
+     
+    // Setup thrusters
     var thruster_x = 28;
     var thruster_y = 39;
-    flame_emitters.push(game.add.emitter(-thruster_x, thruster_y, 1000));
-    flame_emitters.push(game.add.emitter(thruster_x, thruster_y, 1000));
-    for (var i = 0; i < flame_emitters.length; i++) {
-      flame_emitters[i].makeParticles('fireblob');
-      player.addChild(flame_emitters[i]);
-      flame_emitters[i].lifespan = 150;
-      flame_emitters[i].minParticleSpeed = new Phaser.Point(-10, 10);
-      flame_emitters[i].maxParticleSpeed = new Phaser.Point(10, 50);
-      flame_emitters[i].tint = tint;
-      flame_emitters[i].forEach(function(particle) {
+    this.flame_emitters.push(game.add.emitter(-thruster_x, thruster_y, 1000));
+    this.flame_emitters.push(game.add.emitter(thruster_x, thruster_y, 1000));
+    for (var i = 0; i < this.flame_emitters.length; i++) {
+      this.flame_emitters[i].makeParticles('fireblob');
+      this.player.addChild(this.flame_emitters[i]);
+      this.flame_emitters[i].lifespan = 150;
+      this.flame_emitters[i].minParticleSpeed = new Phaser.Point(-10, 10);
+      this.flame_emitters[i].maxParticleSpeed = new Phaser.Point(10, 50);
+      this.flame_emitters[i].tint = tint;
+      this.flame_emitters[i].forEach(function(particle) {
         particle.tint = tint;
       });
     }
 
-    cursors = game.input.keyboard.createCursorKeys();
+    this.keys = {
+      up: game.input.keyboard.addKey(Phaser.Keyboard.W),
+      down: game.input.keyboard.addKey(Phaser.Keyboard.S),
+      left: game.input.keyboard.addKey(Phaser.Keyboard.A),
+      right: game.input.keyboard.addKey(Phaser.Keyboard.D),
+    };
   }
 
   this.update = function() {
@@ -45,34 +54,36 @@ function playState(game) {
     var rotation_speed = 10;
     var max_rotation_speed = 200;
     var slow_down_rate = 1.01;
-
-    if (cursors.up.isDown) {
-      background.velocity.x -= Math.sin(player.rotation) * speed;
-      background.velocity.y += Math.cos(player.rotation) * speed;
-      for (var i = 0; i < flame_emitters.length; i++) {
-        flame_emitters[i].emitParticle();
+    
+    // Accelerate forward 
+    if (this.keys.up.isDown) {
+      this.background.velocity.x -= Math.sin(this.player.rotation) * speed;
+      this.background.velocity.y += Math.cos(this.player.rotation) * speed;
+      for (var i = 0; i < this.flame_emitters.length; i++) {
+        this.flame_emitters[i].emitParticle();
       }
     } else {
-      background.velocity.x /= slow_down_rate;
-      background.velocity.y /= slow_down_rate;
+      this.background.velocity.x /= slow_down_rate;
+      this.background.velocity.y /= slow_down_rate;
     }
-    background.velocity.x = value_or_max(background.velocity.x, max_speed);
-    background.velocity.y = value_or_max(background.velocity.y, max_speed);
-    background.tilePosition.x += background.velocity.x;
-    background.tilePosition.y += background.velocity.y;
+    this.background.velocity.x = value_or_max(this.background.velocity.x, max_speed);
+    this.background.velocity.y = value_or_max(this.background.velocity.y, max_speed);
+    this.background.tilePosition.x += this.background.velocity.x;
+    this.background.tilePosition.y += this.background.velocity.y;
 
-    if (cursors.left.isDown) {
-      player.body.angularVelocity -= rotation_speed;
-      flame_emitters[1].emitParticle();
+    // Rotate left or right
+    if (this.keys.left.isDown) {
+      this.player.body.angularVelocity -= rotation_speed;
+      this.flame_emitters[1].emitParticle();
     }
-    if (cursors.right.isDown) {
-      player.body.angularVelocity += rotation_speed;
-      flame_emitters[0].emitParticle();
+    if (this.keys.right.isDown) {
+      this.player.body.angularVelocity += rotation_speed;
+      this.flame_emitters[0].emitParticle();
     }
-    if (!cursors.left.isDown && !cursors.right.isDown) {
-      player.body.angularVelocity /= slow_down_rate;
+    if (!keys.left.isDown && !keys.right.isDown) {
+      this.player.body.angularVelocity /= slow_down_rate;
     }
-    player.body.angularVelocity = value_or_max(player.body.angularVelocity,
+    this.player.body.angularVelocity = value_or_max(this.player.body.angularVelocity,
                                                max_rotation_speed);
   }
 
