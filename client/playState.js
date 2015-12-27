@@ -1,10 +1,16 @@
 function playState(game) {
   this.background = null;
   this.player = null;
-  this.flame_emitters = [];
   this.keys = null;
   this.debug_text = null;
   this.debug = true;
+  this.other_players = [];
+
+  var thruster_x = 28;
+  var thruster_y = 39;
+  var thruster_lifespan = 150;
+  var thruster_min_particle_speed = new Phaser.Point(-10, 10)
+  var thruster_max_particle_speed = new Phaser.Point(10, 50)
 
   this.init = function() {
     // Keeps the game running even when window is not focused on.
@@ -22,10 +28,10 @@ function playState(game) {
     this.background.velocity = { x: 0, y: 0 };
   };
 
-  this.initPlayer = function() {
-    this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'ship');
-    game.physics.arcade.enable(this.player);
-    this.player.anchor.setTo(0.5, 0.5);
+  this.createPlayer = function(x, y) {
+    var player = game.add.sprite(game.world.centerX, game.world.centerY, 'ship');
+    game.physics.arcade.enable(player)
+    player.anchor.setTo(0.5, 0.5);
     var tint = get_tint();
     this.player.tint = tint;
     this.player.data = {
@@ -42,23 +48,21 @@ function playState(game) {
       tint: tint,
     };
      
-    // Setup thrusters
-    var thruster_x = 28;
-    var thruster_y = 39;
-    this.flame_emitters.push(game.add.emitter(-thruster_x, thruster_y, 1000));
-    this.flame_emitters.push(game.add.emitter(thruster_x, thruster_y, 1000));
-    for (var i = 0; i < this.flame_emitters.length; i++) {
-      var fe = flame_emitters[i];
+    player.thrusters = [];
+    player.thrusters.push(game.add.emitter(-thruster_x, thruster_y, 1000));
+    player.thrusters.push(game.add.emitter(thruster_x, thruster_y, 1000));
+    player.thrusters.forEach(function(fe) {
       fe.makeParticles('fireblob');
-      this.player.addChild(fe);
-      fe.lifespan = 150;
-      fe.minParticleSpeed = new Phaser.Point(-10, 10);
-      fe.maxParticleSpeed = new Phaser.Point(10, 50);
+      player.addChild(fe);
+      fe.lifespan = thruster_lifespan;
+      fe.minParticleSpeed = thruster_min_particle_speed;
+      fe.maxParticleSpeed = thruster_max_particle_speed;
       fe.tint = tint;
       fe.forEach(function(particle) {
         particle.tint = tint;
       });
-    }
+    });
+    return player;
   };
   
   this.initInput = function() {
@@ -79,19 +83,13 @@ function playState(game) {
 
   this.create = function() {
     this.initBackground();
-    this.initPlayer();
+    this.player = this.createPlayer(0, 0);
+    this.other_players.push(this.createPlayer(100, 100));
     this.initInput();
     this.initDebugging();
   };
 
-  this.getPlayerMovement = function() {
-    var speed = 0.1;
-    var max_speed = 20;
-    var rotation_speed = 10;
-    var max_rotation_speed = 200;
-    var slow_down_rate = 1.01;
-    
-    // Accelerate forward 
+  this.updatePlayer = function() {
     if (this.keys.up.isDown) {
       this.background.velocity.x -= Math.sin(this.player.rotation) * speed;
       this.background.velocity.y += Math.cos(this.player.rotation) * speed;
@@ -104,52 +102,40 @@ function playState(game) {
       this.background.velocity.x = value_or_zero(this.background.velocity.x);
       this.background.velocity.y = value_or_zero(this.background.velocity.y);
     }
-    this.background.velocity.x = value_or_max(this.background.velocity.x, max_speed);
-    this.background.velocity.y = value_or_max(this.background.velocity.y, max_speed);
-    this.background.tilePosition.x += this.background.velocity.x;
-    this.background.tilePosition.y += this.background.velocity.y;
-
-    // Rotate left or right
     if (this.keys.left.isDown) {
-      this.player.body.angularVelocity -= rotation_speed;
-      this.flame_emitters[1].emitParticle();
+      this.player.thrusters[1].emitParticle();
     }
     if (this.keys.right.isDown) {
-      this.player.body.angularVelocity += rotation_speed;
-      this.flame_emitters[0].emitParticle();
+      this.player.thrusters[0].emitParticle();
     }
-    if (!keys.left.isDown && !keys.right.isDown) {
-      this.player.body.angularVelocity /= slow_down_rate;
-      this.player.body.angularVelocity = value_or_zero(
-          this.player.body.angularVelocity);
-    }
-    this.player.body.angularVelocity = value_or_max(this.player.body.angularVelocity,
-                                                    max_rotation_speed);
+  }
+
+  this.updateOtherPlayers = function() {
+    this.other_players.forEach(function(op) {  
+      op.x = game.world.centerX + op.data.x - this.player.data.x;
+      op.y = game.world.centerY - op.data.y + this.player.data.y;
+      op.rotation = op.data.r;
+    });
+  };
+
+  this.updateBackground = function() {
   };
 
   this.updateDebuggingText = function() {
     var text = '';
-    text += 'x: ' + this.player.data.position.x + '\n';
-    text += 'y: ' + this.player.data.position.y + '\n';
-    text += 'r: ' + this.player.data.position.r + '\n';
-    text += 'x: ' + this.player.data.velocity.x + '\n';
-    text += 'y: ' + this.player.data.velocity.y + '\n';
-    text += 'r: ' + this.player.data.velocity.r + '\n';
+    for (key in this.player.data) {
+      text += key + ': ' + this.player.data[key] + '\n';
+    }
     this.debug_text.text = text;
   };
 
   this.sync = function() {
-    this.player.data.position.x -= this.background.velocity.x;
-    this.player.data.position.y += this.background.velocity.y;
-    this.player.data.position.r = this.player.rotation;
-
-    this.player.data.velocity.x = -this.background.velocity.x;
-    this.player.data.velocity.y = this.background.velocity.y;
-    this.player.data.velocity.r = -this.player.body.angularVelocity;
   };
   
   this.update = function() {
-    this.getPlayerMovement();
+    this.updatePlayer();
+    this.updateOtherPlayers();
+    this.updateBackground();
     if (this.debug) {
       this.updateDebuggingText();
     }
