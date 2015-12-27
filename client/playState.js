@@ -6,6 +6,11 @@ function playState(game) {
   this.debug_text = null;
   this.debug = true;
 
+  this.init = function() {
+    // Keeps the game running even when window is not focused on.
+    game.stage.disableVisibilityChange = true;
+  }
+
   this.preload = function() {
     game.load.image('space-bg', '/static/assets/img/space-bg.jpg');
     game.load.image('ship', '/static/assets/img/ship.png');
