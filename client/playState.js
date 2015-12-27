@@ -95,6 +95,8 @@ function playState(game) {
     } else {
       this.background.velocity.x /= slow_down_rate;
       this.background.velocity.y /= slow_down_rate;
+      this.background.velocity.x = value_or_zero(this.background.velocity.x);
+      this.background.velocity.y = value_or_zero(this.background.velocity.y);
     }
     this.background.velocity.x = value_or_max(this.background.velocity.x, max_speed);
     this.background.velocity.y = value_or_max(this.background.velocity.y, max_speed);
@@ -148,6 +150,14 @@ function value_or_max(value, max) {
   if (abs_value > max) {
     var sign = value / abs_value;
     return sign * max;
+  }
+  return value;
+}
+
+function value_or_zero(value) {
+  var epsilon = 0.01;
+  if (Math.abs(value) < epsilon) {
+    return 0;
   }
   return value;
 }
