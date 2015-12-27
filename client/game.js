@@ -5,6 +5,8 @@ var height = window.innerHeight;
 
 game = new Phaser.Game(width, height, Phaser.AUTO, '', null);
 
-game.state.add('play', require('./playState.js')(game));
+// Keeps the game running even when window is not focused on.
+game.stage.disableVisibilityChange = true;
 
+game.state.add('play', require('./playState.js')(game));
 game.state.start('play');
