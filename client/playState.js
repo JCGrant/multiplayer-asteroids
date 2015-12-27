@@ -12,6 +12,8 @@ function playState(game) {
   var thruster_min_particle_speed = new Phaser.Point(-10, 10)
   var thruster_max_particle_speed = new Phaser.Point(10, 50)
 
+  var EPSILON = 0.01;
+
   this.init = function() {
     // Keeps the game running even when window is not focused on.
     game.stage.disableVisibilityChange = true;
@@ -151,8 +153,7 @@ function value_or_max(value, max) {
 }
 
 function value_or_zero(value) {
-  var epsilon = 0.01;
-  if (Math.abs(value) < epsilon) {
+  if (Math.abs(value) < EPSILON) {
     return 0;
   }
   return value;
