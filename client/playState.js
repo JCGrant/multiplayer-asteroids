@@ -33,18 +33,14 @@ function playState(game) {
     game.physics.arcade.enable(player)
     player.anchor.setTo(0.5, 0.5);
     var tint = get_tint();
-    this.player.tint = tint;
-    this.player.data = {
-      position: {
-        x: 0,
-        y: 0,
-        r: 0,
-      },
-      velocity: {
-        dx: 0,
-        dy: 0,
-        dr: 0,
-      },
+    player.tint = tint;
+    player.data = {
+      x: x,
+      y: y,
+      r: 0,
+      dx: 0,
+      dy: 0,
+      dr: 0,
       tint: tint,
     };
      
@@ -91,16 +87,9 @@ function playState(game) {
 
   this.updatePlayer = function() {
     if (this.keys.up.isDown) {
-      this.background.velocity.x -= Math.sin(this.player.rotation) * speed;
-      this.background.velocity.y += Math.cos(this.player.rotation) * speed;
-      for (var i = 0; i < this.flame_emitters.length; i++) {
-        this.flame_emitters[i].emitParticle();
-      }
-    } else {
-      this.background.velocity.x /= slow_down_rate;
-      this.background.velocity.y /= slow_down_rate;
-      this.background.velocity.x = value_or_zero(this.background.velocity.x);
-      this.background.velocity.y = value_or_zero(this.background.velocity.y);
+      this.player.thrusters.forEach(function(fe) {
+        fe.emitParticle();
+      });
     }
     if (this.keys.left.isDown) {
       this.player.thrusters[1].emitParticle();
