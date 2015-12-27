@@ -10,12 +10,12 @@ function playState(game) {
     game.load.image('space-bg', '/static/assets/img/space-bg.jpg');
     game.load.image('ship', '/static/assets/img/ship.png');
     game.load.image('fireblob', '/static/assets/img/fireblob.png');
-  }
+  };
 
   this.initBackground = function() {
     this.background = game.add.tileSprite(0, 0, game.width, game.height, 'space-bg');
     this.background.velocity = { x: 0, y: 0 };
-  }
+  };
 
   this.initPlayer = function() {
     this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'ship');
@@ -53,7 +53,7 @@ function playState(game) {
         particle.tint = tint;
       });
     }
-  }
+  };
   
   this.initInput = function() {
     this.keys = {
@@ -62,21 +62,21 @@ function playState(game) {
       left: game.input.keyboard.addKey(Phaser.Keyboard.A),
       right: game.input.keyboard.addKey(Phaser.Keyboard.D),
     };
-  }
+  };
 
   this.initDebugging = function() {
     this.debug_text = game.add.text(10, 10, '', {
       font: '12px Arial',
       fill: '#ffff00',
     });
-  }
+  };
 
   this.create = function() {
     this.initBackground();
     this.initPlayer();
     this.initInput();
     this.initDebugging();
-  }
+  };
 
   this.getPlayerMovement = function() {
     var speed = 0.1;
@@ -115,7 +115,7 @@ function playState(game) {
     }
     this.player.body.angularVelocity = value_or_max(this.player.body.angularVelocity,
                                                     max_rotation_speed);
-  }
+  };
 
   this.updateDebuggingText = function() {
     this.debug_text.text = '';
@@ -124,14 +124,14 @@ function playState(game) {
         this.debug_text.text += _key + ': ' + player.universal[key][_key] + '\n';
       }
     }
-  }
+  };
   
   this.update = function() {
     this.getPlayerMovement();
     if (this.debug) {
       this.updateDebuggingText();
     }
-  }
+  };
 
   return this;
 }
