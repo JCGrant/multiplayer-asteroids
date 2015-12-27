@@ -3,6 +3,8 @@ function playState(game) {
   this.player = null;
   this.flame_emitters = [];
   this.keys = null;
+  this.debug_text = null;
+  this.debug = true;
 
   this.preload = function() {
     game.load.image('space-bg', '/static/assets/img/space-bg.jpg');
@@ -10,18 +12,29 @@ function playState(game) {
     game.load.image('fireblob', '/static/assets/img/fireblob.png');
   }
 
-  this.create = function() {
-    
-    // Set up background
+  this.initBackground = function() {
     this.background = game.add.tileSprite(0, 0, game.width, game.height, 'space-bg');
     this.background.velocity = { x: 0, y: 0 };
-    
-    // Setup player
+  }
+
+  this.initPlayer = function() {
     this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'ship');
     game.physics.arcade.enable(this.player);
     this.player.anchor.setTo(0.5, 0.5);
     var tint = get_tint();
     this.player.tint = tint;
+    this.player.universal = {
+      position: {
+        x: 0,
+        y: 0,
+        r: 0,
+      },
+      velocity: {
+        dx: 0,
+        dy: 0,
+        dr: 0,
+      },
+    };
      
     // Setup thrusters
     var thruster_x = 28;
@@ -40,7 +53,9 @@ function playState(game) {
         particle.tint = tint;
       });
     }
-
+  }
+  
+  this.initInput = function() {
     this.keys = {
       up: game.input.keyboard.addKey(Phaser.Keyboard.W),
       down: game.input.keyboard.addKey(Phaser.Keyboard.S),
@@ -49,7 +64,21 @@ function playState(game) {
     };
   }
 
-  this.update = function() {
+  this.initDebugging = function() {
+    this.debug_text = game.add.text(10, 10, '', {
+      font: '12px Arial',
+      fill: '#ffff00',
+    });
+  }
+
+  this.create = function() {
+    this.initBackground();
+    this.initPlayer();
+    this.initInput();
+    this.initDebugging();
+  }
+
+  this.getPlayerMovement = function() {
     var speed = 0.1;
     var max_speed = 20;
     var rotation_speed = 10;
@@ -86,6 +115,22 @@ function playState(game) {
     }
     this.player.body.angularVelocity = value_or_max(this.player.body.angularVelocity,
                                                     max_rotation_speed);
+  }
+
+  this.updateDebuggingText = function() {
+    this.debug_text.text = '';
+    for (var key in player.universal) {
+      for (var _key in player.universal[key]) {
+        this.debug_text.text += _key + ': ' + player.universal[key][_key] + '\n';
+      }
+    }
+  }
+  
+  this.update = function() {
+    this.getPlayerMovement();
+    if (this.debug) {
+      this.updateDebuggingText();
+    }
   }
 
   return this;
