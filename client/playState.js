@@ -2,7 +2,7 @@ function playState(game) {
   this.background = null;
   this.player = null;
   this.flame_emitters = [];
-  thiskeys = null;
+  this.keys = null;
 
   this.preload = function() {
     game.load.image('space-bg', '/static/assets/img/space-bg.jpg');
@@ -12,11 +12,11 @@ function playState(game) {
 
   this.create = function() {
     
-    // Set up this.background
+    // Set up background
     this.background = game.add.tileSprite(0, 0, game.width, game.height, 'space-bg');
     this.background.velocity = { x: 0, y: 0 };
     
-    // Setup this.player
+    // Setup player
     this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'ship');
     game.physics.arcade.enable(this.player);
     this.player.anchor.setTo(0.5, 0.5);
@@ -29,13 +29,14 @@ function playState(game) {
     this.flame_emitters.push(game.add.emitter(-thruster_x, thruster_y, 1000));
     this.flame_emitters.push(game.add.emitter(thruster_x, thruster_y, 1000));
     for (var i = 0; i < this.flame_emitters.length; i++) {
-      this.flame_emitters[i].makeParticles('fireblob');
-      this.player.addChild(this.flame_emitters[i]);
-      this.flame_emitters[i].lifespan = 150;
-      this.flame_emitters[i].minParticleSpeed = new Phaser.Point(-10, 10);
-      this.flame_emitters[i].maxParticleSpeed = new Phaser.Point(10, 50);
-      this.flame_emitters[i].tint = tint;
-      this.flame_emitters[i].forEach(function(particle) {
+      var flame_emitter = flame_emitters[i];
+      flame_emitter.makeParticles('fireblob');
+      this.player.addChild(flame_emitter);
+      flame_emitter.liflame_emitterspan = 150;
+      flame_emitter.minParticleSpeed = new Phaser.Point(-10, 10);
+      flame_emitter.maxParticleSpeed = new Phaser.Point(10, 50);
+      flame_emitter.tint = tint;
+      flame_emitter.forEach(function(particle) {
         particle.tint = tint;
       });
     }
@@ -84,7 +85,7 @@ function playState(game) {
       this.player.body.angularVelocity /= slow_down_rate;
     }
     this.player.body.angularVelocity = value_or_max(this.player.body.angularVelocity,
-                                               max_rotation_speed);
+                                                    max_rotation_speed);
   }
 
   return this;
