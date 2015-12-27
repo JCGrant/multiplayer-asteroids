@@ -29,14 +29,14 @@ function playState(game) {
     this.flame_emitters.push(game.add.emitter(-thruster_x, thruster_y, 1000));
     this.flame_emitters.push(game.add.emitter(thruster_x, thruster_y, 1000));
     for (var i = 0; i < this.flame_emitters.length; i++) {
-      var flame_emitter = flame_emitters[i];
-      flame_emitter.makeParticles('fireblob');
-      this.player.addChild(flame_emitter);
-      flame_emitter.liflame_emitterspan = 150;
-      flame_emitter.minParticleSpeed = new Phaser.Point(-10, 10);
-      flame_emitter.maxParticleSpeed = new Phaser.Point(10, 50);
-      flame_emitter.tint = tint;
-      flame_emitter.forEach(function(particle) {
+      var fe = flame_emitters[i];
+      fe.makeParticles('fireblob');
+      this.player.addChild(fe);
+      fe.lifespan = 150;
+      fe.minParticleSpeed = new Phaser.Point(-10, 10);
+      fe.maxParticleSpeed = new Phaser.Point(10, 50);
+      fe.tint = tint;
+      fe.forEach(function(particle) {
         particle.tint = tint;
       });
     }
