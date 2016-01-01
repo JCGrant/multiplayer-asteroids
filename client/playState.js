@@ -120,7 +120,9 @@ function playState(game) {
   this.updateDebuggingText = function() {
     var text = '';
     for (key in this.player.data) {
-      text += key + ': ' + this.player.data[key] + '\n';
+      if (this.player.data.hasOwnProperty(key)) {
+        text += key + ': ' + this.player.data[key] + '\n';
+      }
     }
     this.debug_text.text = text;
   };
