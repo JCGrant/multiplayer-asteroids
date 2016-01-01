@@ -10,8 +10,8 @@ function playState(game) {
   var thruster_y = 39;
   var thruster_lifespan = 150;
   var num_thruster_particles = 1000;
-  var thruster_min_particle_speed = new Phaser.Point(-10, 10)
-  var thruster_max_particle_speed = new Phaser.Point(10, 50)
+  var thruster_min_particle_speed = new Phaser.Point(-10, 10);
+  var thruster_max_particle_speed = new Phaser.Point(10, 50);
 
   var EPSILON = 0.01;
 
@@ -46,7 +46,7 @@ function playState(game) {
       dr: 0,
       tint: tint,
     };
-     
+
     player.thrusters = [];
     // Adds a thruster to each side of the ship
     [-1, 1].forEach(function(side) {
@@ -67,7 +67,7 @@ function playState(game) {
     });
     return player;
   };
-  
+
   this.initInput = function() {
     this.keys = {
       up: game.input.keyboard.addKey(Phaser.Keyboard.W),
@@ -107,7 +107,7 @@ function playState(game) {
   }
 
   this.updateOtherPlayers = function() {
-    this.other_players.forEach(function(op) {  
+    this.other_players.forEach(function(op) {
       op.x = game.world.centerX + op.data.x - this.player.data.x;
       op.y = game.world.centerY - op.data.y + this.player.data.y;
       op.rotation = op.data.r;
@@ -129,7 +129,7 @@ function playState(game) {
 
   this.sync = function() {
   };
-  
+
   this.update = function() {
     this.updatePlayer();
     this.updateOtherPlayers();
