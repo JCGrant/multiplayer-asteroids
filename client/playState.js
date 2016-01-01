@@ -9,6 +9,7 @@ function playState(game) {
   var thruster_x = 28;
   var thruster_y = 39;
   var thruster_lifespan = 150;
+  var num_thruster_particles = 1000;
   var thruster_min_particle_speed = new Phaser.Point(-10, 10)
   var thruster_max_particle_speed = new Phaser.Point(10, 50)
 
@@ -47,8 +48,12 @@ function playState(game) {
     };
      
     player.thrusters = [];
-    player.thrusters.push(game.add.emitter(-thruster_x, thruster_y, 1000));
-    player.thrusters.push(game.add.emitter(thruster_x, thruster_y, 1000));
+    // Adds a thruster to each side of the ship
+    [-1, 1].forEach(function(side) {
+    player.thrusters.push(game.add.emitter(side * thruster_x,
+                                           thruster_y,
+                                           num_thruster_particles));
+    });
     player.thrusters.forEach(function(fe) {
       fe.makeParticles('fireblob');
       player.addChild(fe);
