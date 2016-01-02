@@ -26,7 +26,6 @@ function playState(game) {
 
   this.initBackground = function() {
     this.background = game.add.tileSprite(0, 0, game.width, game.height, 'space-bg');
-    this.background.velocity = { x: 0, y: 0 };
   };
 
   this.createPlayer = function(x, y) {
