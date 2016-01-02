@@ -95,11 +95,11 @@ function playState(game) {
         fe.emitParticle();
       });
     }
-    if (this.keys.left.isDown) {
-      this.player.thrusters[1].emitParticle();
-    }
     if (this.keys.right.isDown) {
       this.player.thrusters[0].emitParticle();
+    }
+    if (this.keys.left.isDown) {
+      this.player.thrusters[1].emitParticle();
     }
   }
 
