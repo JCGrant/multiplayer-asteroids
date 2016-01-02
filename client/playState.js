@@ -13,8 +13,6 @@ function playState(game) {
   var thruster_min_particle_speed = new Phaser.Point(-10, 10);
   var thruster_max_particle_speed = new Phaser.Point(10, 50);
 
-  var EPSILON = 0.01;
-
   this.init = function() {
     // Keeps the game running even when window is not focused on.
     game.stage.disableVisibilityChange = true;
@@ -148,22 +146,6 @@ function get_tint() {
   var g = (0x77 + 0x88 * Math.random());
   var b = (0x77 + 0x88 * Math.random());
   return (r << 16) + (g << 8) + (b << 0);
-}
-
-function value_or_max(value, max) {
-  var abs_value = Math.abs(value);
-  if (abs_value > max) {
-    var sign = value / abs_value;
-    return sign * max;
-  }
-  return value;
-}
-
-function value_or_zero(value) {
-  if (Math.abs(value) < EPSILON) {
-    return 0;
-  }
-  return value;
 }
 
 module.exports = playState;
