@@ -1,5 +1,5 @@
-# Spaceshooter
-A simple 2d space shooter
+# Multiplayer Asteroids
+A multiplayer game where users can fly around in an infinite 2d universe and shoot one another.
 
 ## Credit
 * Spaceship: http://cliparts.co/picture-of-a-space-ship
