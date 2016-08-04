@@ -2,7 +2,7 @@
 A multiplayer game where users can fly around in an infinite 2d universe and shoot one another.
 
 ## Credit
-* Spaceship: http://cliparts.co/picture-of-a-space-ship
+* Spaceship: http://cliparts.co/clipart/215552
 * Space background: http://1-background.com/stars_1.htm
 
 ## Screenshot
